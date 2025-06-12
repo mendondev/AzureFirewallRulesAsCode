@@ -9,10 +9,8 @@ param(
     $FirewallPolicyName,
 
     [Parameter(Mandatory = $false)]
-    $PolicyCsvPath = '.\src\FirewallPolicies.csv'
+    $PolicyCsvPath = './csv/FirewallRules.csv'
 )
-
-
 function Get-AzureFirewallPolicyFromCsv {
     # What to do when this is not working properly?
     #  This probably means that the output format is not matching what is expected in the Bicep template. Try building a resource rule Collection bicep file and compare it with the output of this function.
@@ -88,7 +86,7 @@ $timeStamp = Get-Date -Format "yyyyMMdd-HHmmss"
 $deployParams = @{
     ResourceGroupName       =  $ResourceGroupName
     Name                    = "AzureFirewallPolicyUpdate-$timeStamp"
-    TemplateFile            = '.\src\Firewall.bicep'
+    TemplateFile            = './src/FirewallPolicy.bicep'
     ###
     TemplateParameterObject = @{
         FirewallPolicyName   = $FirewallPolicyName
@@ -100,13 +98,14 @@ $null = Set-AzContext -SubscriptionId $SubscriptionId -ErrorAction Stop
 New-AzResourceGroupDeployment @deployParams -Verbose
 
 # Check if there are extra RuleCollectionGroups on Azure that are not in the CSV and delete them
-$fwp = Get-AzFirewallPolicy -ResourceGroupName $deployParams.ResourceGroupName -Name $deployParams.TemplateParameterObject.FirewallPolicyName
-$ruleCollectionGroupsOnAzure = $fwp.RuleCollectionGroups
-$ruleCollectionGroupsInCsv = (Get-AzureFirewallPolicyFromCsv).Name
-$ruleCollectionGroupsToDelete = $ruleCollectionGroupsOnAzure.Id  | Where-Object { ($_ | Split-Path -Leaf) -notin $ruleCollectionGroupsInCsv }
-if ($ruleCollectionGroupsToDelete) {
-    foreach ($ruleCollectionGroupToDelete in $ruleCollectionGroupsToDelete) {
-        Write-PSFMessage -Level Host -Message "Deleting $($ruleCollectionGroupToDelete | Split-Path -Leaf)"
-        Remove-AzFirewallPolicyRuleCollectionGroup -ResourceId $ruleCollectionGroupToDelete -Force -Confirm:$false
-    }
-}
+#CURRENTLY NOT IMPLEMENTED AS THIS CAN DISRUPT ANYTHING BEING DONE VIA THE GUI
+# $fwp = Get-AzFirewallPolicy -ResourceGroupName $deployParams.ResourceGroupName -Name $deployParams.TemplateParameterObject.FirewallPolicyName
+# $ruleCollectionGroupsOnAzure = $fwp.RuleCollectionGroups
+# $ruleCollectionGroupsInCsv = (Get-AzureFirewallPolicyFromCsv).Name
+# $ruleCollectionGroupsToDelete = $ruleCollectionGroupsOnAzure.Id  | Where-Object { ($_ | Split-Path -Leaf) -notin $ruleCollectionGroupsInCsv }
+# if ($ruleCollectionGroupsToDelete) {
+#     foreach ($ruleCollectionGroupToDelete in $ruleCollectionGroupsToDelete) {
+#         Write-PSFMessage -Level Host -Message "Deleting $($ruleCollectionGroupToDelete | Split-Path -Leaf)"
+#         Remove-AzFirewallPolicyRuleCollectionGroup -ResourceId $ruleCollectionGroupToDelete -Force -Confirm:$false
+#     }
+# }

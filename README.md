@@ -1,6 +1,8 @@
-# AzureFirewallPolicyExportImport
+# Azure Firewall Rules as Code using Bicep, Powershell and DevOps
 
-This (quickly created repo) contains PowerShell scripts and Bicep templates to export Azure Firewall Rule Collection Policies into a CSV file that can be edited then reimported to quickly update the rules.
+Please check out my blog post with all the most up to date information - [Blog Post](https://mendon.dev/azure-firewall-rules-as-code/)
+
+This fork is built upon the great work on of Will Moselhy - please check out his [GitHub repo](https://github.com/WillyMoselhy/AzureFirewallPolicyExportImport)
 
 ## Using the scripts
 
@@ -8,7 +10,7 @@ This (quickly created repo) contains PowerShell scripts and Bicep templates to e
 2. Edit the CSV file to make the changes you want.
 3. Import the rules back into the Azure Firewall Policy using the `Invoke-DeployFirewallPolicyRules.ps1` script. This will import the updated CSV file and deploy it to the Azure Firewall Policy.
 
-## Example
+## Manual Example
 
 ```PowerShell
 Connect-AzAccount
@@ -18,3 +20,5 @@ Export-AzureFirewallPolicyRules.ps1 -FirewallPolicyId "/subscriptions/00000000-0
 
 Invoke-DeployFirewallPolicyRules.ps1 -SubscriptionId "00000000-0000-0000-0000-000000000000" -ResourceGroupName "MyResourceGroup" -FirewallPolicyName "MyFirewallPolicy"
 ```
+
+For steps on how to configure this within DevOps, please visit my blog.

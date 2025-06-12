@@ -3,7 +3,7 @@ param (
     $FirewallPolicyId,
 
     [Parameter(Mandatory = $false)]
-    $OutputCSVPath = '.\src\FirewallPolicies.csv'
+    $OutputCSVPath = '.\csv\FirewallRules.csv'
 )
 
 $fwp = Get-AzFirewallPolicy -ResourceId $FirewallPolicyId
